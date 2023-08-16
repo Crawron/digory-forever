@@ -21,10 +21,12 @@ type MirrorMessage = {
 }
 
 async function createMirrorMessage(message: Message): Promise<MirrorMessage> {
+	const emoji = config.emojiMap?.[message.author.id] ?? "⚪"
+
 	return {
 		channelId: message.channelId,
 		timestamp: Math.floor(message.createdTimestamp / 1000),
-		emoji: /* (await getEmoji(message.author.id)) ?? */ "⚪",
+		emoji,
 		content: message.content,
 		authorId: message.author.id,
 		url: message.url,
