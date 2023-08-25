@@ -9,6 +9,7 @@ const configSchema = z.object({
 	mirrorSources: z.string().array().optional().default([]),
 	announcementTargets: z.string().array().optional().default([]),
 	emojiMap: z.record(z.string(), z.string()).optional(),
+	avatarTargets: z.string().array().optional().default([]),
 })
 
 // todo: create config file if doesn't exist

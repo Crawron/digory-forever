@@ -11,6 +11,7 @@ import {
 } from "./commands/definitions/get-ids"
 import { announceCommand } from "./commands/definitions/announce"
 import { handleMirror } from "./message-mirror"
+import { avatarsCommand } from "./commands/definitions/avatars"
 
 const discordClient = new Client({
 	intents: ["GuildMessages", "Guilds", "MessageContent", "GuildMembers"],
@@ -27,6 +28,7 @@ handleCommands(discordClient, env.DISCORD_SERVER_ID, [
 	explodeCommand,
 	checkConfigCommand,
 	announceCommand,
+	avatarsCommand,
 ])
 
 discordClient.login(env.DISCORD_BOT_TOKEN)
