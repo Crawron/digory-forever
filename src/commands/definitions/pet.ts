@@ -11,7 +11,7 @@ export const petCommand: CommandDefinition = {
 
 		const heart: string = arrRand(hearts) ?? "💖"
 
-		const response = `*${arrRand(barks)}!* ${heart}`
+		const response = `## *${arrRand(barks)}!* ${heart}`
 
 		await appendPet({
 			from_id: int.user.id,
@@ -21,7 +21,7 @@ export const petCommand: CommandDefinition = {
 		})
 
 		await int.reply({
-			content: `# *${arrRand(barks)}!* ${heart}`,
+			content: response,
 			fetchReply: true,
 		})
 	},
