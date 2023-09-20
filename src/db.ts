@@ -63,3 +63,47 @@ export async function getLedgerResults() {
 	countMap.delete("BANK")
 	return countMap
 }
+
+//  Pet
+
+export type Pet = {
+	id: string
+	recorded_at: number
+	from_id: string
+	response: string
+}
+
+function createPetTable() {
+	return db.schema.createTable("Pets", (table) => {
+		table.string("id").notNullable().primary()
+		table.timestamp("recorded_at").notNullable()
+		table.string("from_id").notNullable()
+		table.string("response").notNullable()
+	})
+}
+
+if (!(await db.schema.hasTable("Pets"))) {
+	await createPetTable()
+}
+
+export async function appendPet(pet: Pet) {
+	const inserted = await db.insert<string, Pet[]>(pet, "*").into("Pets")
+
+	return inserted
+}
+
+export async function getPets() {
+	return await db.table<Pet>("Pets")
+}
+
+export async function getPetsCount() {
+	const countMap = new Map<string, number>()
+
+	const pets = await db.table<Pet>("Pets")
+	for (const pet of pets) {
+		const count = countMap.get(pet.from_id) ?? 0
+		countMap.set(pet.from_id, count + 1)
+	}
+
+	return countMap
+}
