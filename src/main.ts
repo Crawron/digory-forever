@@ -13,6 +13,7 @@ import { announceCommand } from "./commands/definitions/announce"
 import { handleMirror } from "./message-mirror"
 import { avatarsCommand } from "./commands/definitions/avatars"
 import { garnetCountCommand, tradeCommand } from "./commands/definitions/trade"
+import { rollCommand } from "./commands/definitions/roll"
 
 const discordClient = new Client({
 	intents: ["GuildMessages", "Guilds", "MessageContent", "GuildMembers"],
@@ -32,6 +33,7 @@ handleCommands(discordClient, env.DISCORD_SERVER_ID, [
 	avatarsCommand,
 	tradeCommand,
 	garnetCountCommand,
+	rollCommand,
 ])
 
 discordClient.login(env.DISCORD_BOT_TOKEN)
