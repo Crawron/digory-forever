@@ -4,7 +4,7 @@ import { z } from "zod"
 
 export const env = z
 	.object({
-		DATA_DIR: z.string(),
+		DATA_DIR: z.string().optional().default("./data/"),
 		DISCORD_BOT_TOKEN: z.string(),
 		DISCORD_SERVER_ID: z.string(),
 		/* REDIS_URL: z.string(), */
