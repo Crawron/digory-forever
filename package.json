@@ -6,20 +6,20 @@
 		"preview": "pnpm build && node dist/main.js"
 	},
 	"devDependencies": {
-		"@types/chroma-js": "^2.4.0",
-		"@types/node": "^20.5.0",
-		"esbuild": "^0.19.2",
-		"tsx": "^3.12.7",
-		"typescript": "^5.1.6"
+		"@types/chroma-js": "^2.4.3",
+		"@types/node": "^20.10.0",
+		"esbuild": "^0.19.8",
+		"tsx": "^4.6.0",
+		"typescript": "^5.3.2"
 	},
 	"dependencies": {
 		"chroma-js": "^2.4.2",
-		"discord.js": "^14.12.1",
+		"discord.js": "^14.14.1",
 		"dotenv": "^16.3.1",
-		"knex": "^2.5.1",
-		"nanoid": "^4.0.2",
+		"knex": "^3.0.1",
+		"nanoid": "^5.0.3",
 		"sqlite3": "^5.1.6",
-		"yaml": "^2.3.1",
-		"zod": "^3.21.4"
+		"yaml": "^2.3.4",
+		"zod": "^3.22.4"
 	}
 }
