@@ -28,8 +28,6 @@ export const announceCommand: CommandDefinition = {
 		const message = int.options.get("message")?.value?.toString().trim()
 		if (!message) return int.reply("No message provided")
 
-		const reply = await int.deferReply()
-
 		const targets = config.announcementTargets
 			.map((cid) => int.client.channels.resolve(cid))
 			.filter(isTruthy)
@@ -38,8 +36,10 @@ export const announceCommand: CommandDefinition = {
 				(c): c is TextChannel | NewsChannel => c.type === ChannelType.GuildText
 			)
 
+		const reply = await int.reply(`⏳ Sending announcement to ${targets.length} channels:\n> ${message}`)
+
 		for (const target of targets) await target.send(message)
 
-		reply.edit(`Sent to ${targets.length} channels:\n> ${message}`)
+		reply.edit(`✅ Sent announcement to ${targets.length} channels:\n> ${message}`)
 	},
 }

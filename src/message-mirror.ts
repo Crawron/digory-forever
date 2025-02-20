@@ -15,9 +15,8 @@ type MirrorMessage = {
 	content: string
 	url: string
 	attachment: boolean
-	/* edited?: boolean
-	deleted?: boolean
-	 */
+	// edited?: boolean
+	// deleted?: boolean
 }
 
 async function createMirrorMessage(message: Message): Promise<MirrorMessage> {
@@ -46,38 +45,27 @@ const colorMap = new Map<string, number>()
 function bunchMessages(messages: MirrorMessage[]): MirrorBunch[] {
 	const bunches: MirrorBunch[] = []
 
-	let lastChannel = ""
-	let lastAuthor = ""
-	let currentBunch: MirrorBunch | null = null
-
 	for (const message of messages) {
-		if (lastChannel !== message.channelId) {
-			if (currentBunch) bunches.push(currentBunch)
+		if (!colorMap.has(message.channelId))
+			colorMap.set(message.channelId, parseInt(chroma.oklch(1, 0.3, Math.ceil(Math.random() * 360)).hex("rgb").replace("#", ""), 16))
 
-			if (!colorMap.has(message.channelId)) {
-				const newColor = chroma.hsl(Math.random() * 360, 1, 0.7).num()
-				colorMap.set(message.channelId, newColor)
-			}
-
-			currentBunch = {
-				color: colorMap.get(message.channelId) ?? 0,
-				id: message.channelId,
-				timestamp: message.timestamp,
-				messages: [],
-				url: message.url,
-			}
-			lastAuthor = ""
+		let targetBunch: MirrorBunch = bunches.find(b => b.id === message.channelId) ?? {
+			color: colorMap.get(message.channelId) ?? 0,
+			id: message.channelId,
+			timestamp: message.timestamp,
+			messages: [],
+			url: message.url,
 		}
 
-		if (lastAuthor !== message.authorId) message.first = true
+		const lastMessage = [...targetBunch.messages].pop()
+		if (lastMessage?.authorId !== message.authorId) message.first = true
 
-		currentBunch?.messages.push(message)
+		targetBunch?.messages.push(message)
 
-		lastChannel = message.channelId
-		lastAuthor = message.authorId
+		if (targetBunch && !bunches.some(b => b.id === targetBunch.id))
+			bunches.push(targetBunch)
 	}
 
-	if (currentBunch) bunches.push(currentBunch)
 	return bunches
 }
 
@@ -90,7 +78,7 @@ function renderMessage({
 	attachment,
 	url,
 }: MirrorMessage): string {
-	const header = `\n${emoji} <@${authorId}> <t:${timestamp}:t>\n`
+	const header = `\n${emoji} <@${authorId}> <t:${timestamp}:t> [x](<${url}>)\n`
 
 	return [first && header, content, attachment && ` [[Attachment]](${url})`]
 		.filter(isTruthy)
@@ -101,7 +89,7 @@ function renderBunch({ id, timestamp, url, messages, color }: MirrorBunch): {
 	description: string
 	color: number
 } {
-	const header = `<#${id}> <t:${timestamp}:D> [Scroll here](${url})\n\n`
+	const header = `<#${id}> <t:${timestamp}:D> [Go here](${url})\n\n`
 	const content = messages.map(renderMessage).join("\n").trim()
 
 	return { description: [header, content].filter(isTruthy).join(""), color }
@@ -142,11 +130,12 @@ export async function handleMirror(message: Message) {
 
 	if (!targetMessage) {
 		const { client } = message
-		const targetChannel =
-			client.channels.cache.get(targetMirror) ??
-			(await client.channels.fetch(targetMirror))
+		// const targetChannel =
+		// 	client.channels.cache.get(targetMirror) ??
+		// 	(await client.channels.fetch(targetMirror))
 
-		if (!targetChannel || !targetChannel.isTextBased()) return
+		const targetChannel = client.channels.resolve(targetMirror)
+		if (!targetChannel || !targetChannel.isTextBased() || !targetChannel.isSendable()) return
 
 		targetMessage = await targetChannel.send(messageToSend)
 	} else {

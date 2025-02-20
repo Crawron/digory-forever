@@ -7,6 +7,7 @@ export const env = z
 		DATA_DIR: z.string().optional().default("./data/"),
 		DISCORD_BOT_TOKEN: z.string(),
 		DISCORD_SERVER_ID: z.string(),
+
 		/* REDIS_URL: z.string(), */
 	})
 	.parse(process.env)

@@ -27,7 +27,7 @@ const discordClient = new Client({
 
 discordClient.on("ready", () => console.info("🦮 Ready"))
 discordClient.on("messageCreate", handleMirror)
-discordClient.on("messageReactionAdd", async (reaction, user) => {
+discordClient.on("messageReactionAdd", async (reaction, _) => {
 	if (reaction.emoji.name !== "📌") return
 
 	const message = await reaction.message.fetch(true)
@@ -49,8 +49,8 @@ handleCommands(discordClient, env.DISCORD_SERVER_ID, [
 	checkConfigCommand,
 	announceCommand,
 	avatarsCommand,
-	tradeCommand,
-	garnetCountCommand,
+	// tradeCommand,
+	// garnetCountCommand,
 	rollCommand,
 ])
 

@@ -1,5 +1,5 @@
 /** Random array element */
-export const arrRand = <T>(arr: T[]) =>
+export const arrRand = <T>(arr: readonly T[]) =>
 	arr[Math.floor(Math.random() * arr.length)]
 
 type Falsy = false | "" | 0 | null | undefined

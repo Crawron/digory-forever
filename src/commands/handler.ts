@@ -2,11 +2,11 @@ import {
 	ApplicationCommandDataResolvable,
 	ApplicationCommandType,
 	Client,
-	CommandInteraction,
+	ChatInputCommandInteraction,
 } from "discord.js"
 
 export type CommandDefinition = {
-	handle: (int: CommandInteraction) => void | Promise<unknown>
+	handle: (int: ChatInputCommandInteraction) => void | Promise<unknown>
 	definition: ApplicationCommandDataResolvable
 }
 
@@ -36,14 +36,13 @@ export async function handleCommands(
 			.join(" ")
 
 		console.log(
-			`📝 Registered ${remoteCommands?.size || "no"} commands. ${
-				commandNames ?? ""
+			`📝 Registered ${remoteCommands?.size || "no"} commands. ${commandNames ?? ""
 			}`
 		)
 	})
 
 	djsClient.on("interactionCreate", (int) => {
-		if (!int.isCommand()) return
+		if (!int.isChatInputCommand()) return
 
 		try {
 			idMap.get(int.commandId)?.(int)

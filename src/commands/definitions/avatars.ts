@@ -19,14 +19,19 @@ export const avatarsCommand: CommandDefinition = {
 			.filter(isTruthy)
 			.map(
 				(u) =>
-					`${u} <${
-						u.avatarURL({ extension: "png", size: 1024 }) ?? u.defaultAvatarURL
+					`${u} ${u.username}\n<${u.avatarURL({ extension: "png", size: 1024 }) ?? u.defaultAvatarURL
 					}>`
-			)
+			).join("\n")
 
-		await reply.edit({
-			content: avatars.join("\n"),
-			allowedMentions: { users: [] },
-		})
+		if (avatars.length > 2000) {
+			console.log(avatars)
+			reply.edit("Sent to console 🦴")
+		}
+		else {
+			await reply.edit({
+				content: avatars,
+				allowedMentions: { users: [] },
+			})
+		}
 	},
 }

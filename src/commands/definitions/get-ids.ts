@@ -24,6 +24,7 @@ const chType = (channelType: ChannelType) => {
 		"13": "Stage",
 		"14": "Directory",
 		"15": "Forum",
+		"16": "Media Forum?"
 	}
 
 	return typeMap[channelType]
@@ -88,20 +89,24 @@ export const explodeCommand: CommandDefinition = {
 		for (const child of channel.children.valueOf().values())
 			children.push(child)
 
-		int.reply({
-			content:
-				`${channel}\n\`\`\`yaml\n` +
-				children
-					.map(
-						(c) =>
-							`- "${c.id}"\t#${c.type !== ChannelType.DM && c.name} (${chType(
-								c.type
-							)})`
-					)
-					.join("\n") +
-				`\`\`\``,
-			ephemeral: true,
-		})
+		const response =
+			`${channel}\n\`\`\`yaml\n` +
+			`#${channel.name}\n` +
+			children
+				.map(
+					(c) =>
+						`- "${c.id}"\t#${c.type !== ChannelType.DM && c.name} (${chType(c.type)})`
+				)
+				.join("\n") +
+			`\n\`\`\``
+
+
+		if (response.length > 2000) {
+			console.info(response)
+			int.reply({ content: `${children.length} items. Check console 🦴`, ephemeral: true })
+		} else {
+			int.reply({ content: response, ephemeral: true })
+		}
 	},
 }
 
