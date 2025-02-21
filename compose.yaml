@@ -1,0 +1,11 @@
+name: "digory-forever"
+
+services:
+  digory:
+    image: digory-forever:latest
+    volumes:
+      - type: bind
+        source: ./data
+        target: /digory-build/data
+    env_file: .env
+

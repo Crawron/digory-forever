@@ -1,0 +1,11 @@
+node_modules
+data
+*.backup
+dist
+.git
+.env
+pnpm-debug.log
+Dockerfile
+compose.yaml
+.dockerignore
+.gitignore
