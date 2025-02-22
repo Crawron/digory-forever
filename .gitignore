@@ -1,6 +1,7 @@
 node_modules
 .env
 dist
+build
 .pnpm-debug.log
 data
 *.backup
