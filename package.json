@@ -8,6 +8,7 @@
 		"build-docker": "docker build -t digory-forever ."
 	},
 	"devDependencies": {
+		"@types/better-sqlite3": "^7.6.12",
 		"@types/chroma-js": "^3.1.1",
 		"@types/node": "^22.13.4",
 		"esbuild": "^0.25.0",
@@ -15,12 +16,12 @@
 		"typescript": "^5.7.3"
 	},
 	"dependencies": {
+		"better-sqlite3": "^11.8.1",
 		"chroma-js": "^3.1.2",
 		"discord.js": "^14.18.0",
 		"dotenv": "^16.4.7",
-		"knex": "^3.1.0",
+		"kysely": "^0.27.5",
 		"nanoid": "^5.1.0",
-		"sqlite3": "^5.1.7",
 		"yaml": "^2.7.0",
 		"zod": "^3.24.2"
 	}

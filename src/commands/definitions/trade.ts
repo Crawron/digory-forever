@@ -87,7 +87,7 @@ export const tradeCommand: CommandDefinition = {
 				reason,
 				link: link ?? null,
 			})
-		).pop()
+		)
 
 		if (goodTrade) {
 			await reply.edit({

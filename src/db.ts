@@ -1,14 +1,17 @@
-import knex from "knex"
+import SQLite from "better-sqlite3"
+import { Generated, Selectable, Insertable, Kysely, SqliteDialect } from "kysely"
+import { env } from "./env"
+import path from "path"
 
-const db = knex({
-	client: "sqlite3",
-	connection: {
-		filename: "./data/garnets.sqlite",
-	},
-})
+//          Definitions
 
-export type Trade = {
-	id: string
+export interface Database {
+	Ledger: LedgerTable
+	Pets: PetsTable
+}
+
+export interface LedgerTable {
+	id: Generated<string>
 	recorded_at: number
 	host_id: string
 	from_id: string
@@ -18,31 +21,49 @@ export type Trade = {
 	link: string | null
 }
 
-function createLedgerTable() {
-	return db.schema.createTable("Ledger", (table) => {
-		table.string("id").notNullable().primary()
-		table.timestamp("recorded_at").notNullable()
-		table.string("host_id").notNullable()
-		table.string("from_id").notNullable()
-		table.string("to_id").notNullable()
-		table.integer("amount").notNullable()
-		table.text("reason").notNullable()
-		table.text("link")
-	})
+export type Trade = Selectable<LedgerTable>
+export type NewTrade = Insertable<LedgerTable>
+
+export interface PetsTable {
+	id: string
+	recorded_at: number
+	from_id: string
+	response: string
 }
 
-if (!(await db.schema.hasTable("Ledger"))) {
-	await createLedgerTable()
-}
+export type NewPet = Insertable<PetsTable>
 
-type Optional<T, K extends keyof T> = Pick<Partial<T>, K> & Omit<T, K>
+const dialect = new SqliteDialect({
+	database: new SQLite(path.join(env.DATA_DIR, "garnets.sqlite")),
+})
+const db = new Kysely<Database>({ dialect })
 
-export async function appendTrade(trade: Trade) {
+db.schema.createTable("Ledger").ifNotExists()
+	.addColumn("id", "text", cb => cb.primaryKey())
+	.addColumn("recorded_at", "text", cb => cb.notNull())
+	.addColumn("host_id", "text", cb => cb.notNull())
+	.addColumn("from_id", "text", cb => cb.notNull())
+	.addColumn("to_id", "text", cb => cb.notNull())
+	.addColumn("amount", "integer", cb => cb.notNull())
+	.addColumn("reason", "text", cb => cb.notNull())
+	.addColumn("link", "text")
+	.execute()
+
+db.schema.createTable("Pets").ifNotExists()
+	.addColumn("id", "text", cb => cb.primaryKey())
+	.addColumn("recorded_at", "text", cb => cb.notNull())
+	.addColumn("from_id", "text", cb => cb.notNull())
+	.addColumn("response", "text", cb => cb.notNull())
+	.execute()
+
+//          Trades
+
+export async function appendTrade(trade: NewTrade) {
 	const insertedTrade = await db
-		.insert<string, Trade[]>(trade, "*")
-		.into("Ledger")
-
-	console.log({ insertedTrade })
+		.insertInto("Ledger")
+		.values(trade)
+		.returningAll()
+		.executeTakeFirst()
 
 	return insertedTrade
 }
@@ -50,7 +71,7 @@ export async function appendTrade(trade: Trade) {
 export async function getLedgerResults() {
 	const countMap = new Map([["BANK", Infinity]])
 
-	const ledger = await db.table<Trade>("Ledger")
+	const ledger = await db.selectFrom("Ledger").selectAll().execute()
 
 	for (const trade of ledger) {
 		const fromBalance = countMap.get(trade.from_id) ?? 0
@@ -64,42 +85,26 @@ export async function getLedgerResults() {
 	return countMap
 }
 
-//  Pet
 
-export type Pet = {
-	id: string
-	recorded_at: number
-	from_id: string
-	response: string
-}
+//          Pets
 
-function createPetTable() {
-	return db.schema.createTable("Pets", (table) => {
-		table.string("id").notNullable().primary()
-		table.timestamp("recorded_at").notNullable()
-		table.string("from_id").notNullable()
-		table.string("response").notNullable()
-	})
-}
-
-if (!(await db.schema.hasTable("Pets"))) {
-	await createPetTable()
-}
-
-export async function appendPet(pet: Pet) {
-	const inserted = await db.insert<string, Pet[]>(pet, "*").into("Pets")
+export async function appendPet(pet: NewPet) {
+	const inserted = await db.insertInto("Pets")
+		.values(pet)
+		.returningAll()
+		.executeTakeFirst()
 
 	return inserted
 }
 
 export async function getPets() {
-	return await db.table<Pet>("Pets")
+	return await db.selectFrom("Pets").selectAll().execute()
 }
 
 export async function getPetsCount() {
 	const countMap = new Map<string, number>()
 
-	const pets = await db.table<Pet>("Pets")
+	const pets = await db.selectFrom("Pets").selectAll().execute()
 	for (const pet of pets) {
 		const count = countMap.get(pet.from_id) ?? 0
 		countMap.set(pet.from_id, count + 1)
