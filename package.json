@@ -5,7 +5,7 @@
 		"dev": "tsx --inspect src/main.ts",
 		"lint": "tsc --noEmit",
 		"preview": "pnpm build && node dist/main.js",
-		"build-docker": "docker build -t digory-forever ."
+		"build-docker": "docker build --platform \"linux/arm/v7\" -t digory-forever ."
 	},
 	"devDependencies": {
 		"@types/better-sqlite3": "^7.6.12",

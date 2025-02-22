@@ -8,4 +8,5 @@ services:
         source: ./data
         target: /digory-build/data
     env_file: .env
+    restart: on-failure
 
