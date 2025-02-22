@@ -1,6 +1,6 @@
 import { nanoid } from "nanoid"
-import { appendPet } from "../../db.js"
 import { arrRand } from "../../helpers.js"
+import { appendPet } from "../../database/pets.js"
 import { CommandDefinition } from "../handler.js"
 
 export const petCommand: CommandDefinition = {
@@ -22,7 +22,7 @@ export const petCommand: CommandDefinition = {
 
 		await int.reply({
 			content: response,
-			fetchReply: true,
 		})
 	},
 }
+

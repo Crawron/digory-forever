@@ -1,6 +1,6 @@
 import { ApplicationCommandOptionType, GuildMember } from "discord.js"
 import { CommandDefinition } from "../handler"
-import { Trade, appendTrade, getLedgerResults } from "../../db"
+import { appendTrade, getLedgerResults, Trade } from "../../database/ledger"
 import { config } from "../../config"
 import { nanoid } from "nanoid"
 
@@ -163,3 +163,4 @@ export const garnetCountCommand: CommandDefinition = {
 		})
 	},
 }
+
