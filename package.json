@@ -5,23 +5,25 @@
 		"dev": "tsx --inspect src/main.ts",
 		"lint": "tsc --noEmit",
 		"preview": "pnpm build && node dist/main.js",
-		"build-docker": "docker build --platform \"linux/arm/v7\" -t digory-forever ."
+		"build-docker": "docker build --platform \"linux/arm/v7\" -t digory-forever .",
+		"test": "vitest --watch"
 	},
 	"devDependencies": {
 		"@types/better-sqlite3": "^7.6.12",
 		"@types/chroma-js": "^3.1.1",
-		"@types/node": "^22.13.4",
-		"esbuild": "^0.25.0",
+		"@types/node": "^22.13.13",
+		"esbuild": "^0.25.1",
 		"tsx": "^4.19.3",
-		"typescript": "^5.7.3"
+		"typescript": "^5.8.2"
 	},
 	"dependencies": {
-		"better-sqlite3": "^11.8.1",
+		"better-sqlite3": "^11.9.1",
 		"chroma-js": "^3.1.2",
 		"discord.js": "^14.18.0",
 		"dotenv": "^16.4.7",
-		"kysely": "^0.27.5",
-		"nanoid": "^5.1.0",
+		"kysely": "^0.27.6",
+		"nanoid": "^5.1.5",
+		"vitest": "^3.0.9",
 		"yaml": "^2.7.0",
 		"zod": "^3.24.2"
 	}
